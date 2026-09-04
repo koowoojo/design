@@ -97,3 +97,11 @@ PR: https://github.com/koowoojo/design/pull/1 (ready for review)
 - PR #1 `MERGEABLE` / `CLEAN`
 - CI 체크 없음 (문서·규칙 설치 PR)
 - 베이스: `origin/main` (`e64901b`)
+
+`gh pr merge`는 직후 GraphQL `not mergeable`로 실패. 로컬에서 `main`에 `--no-ff` 병합 후 `origin/main` 푸시.
+
+결과:
+- 병합 커밋: `4177200`
+- PR #1 상태: `MERGED` (https://github.com/koowoojo/design/pull/1)
+- 병합 후 `build.sh` BUILD_EXIT:0, ENTRY_OK
+- 로컬 브랜치 `cursor/apply-ux-kit-5756` 삭제
