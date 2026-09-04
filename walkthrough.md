@@ -105,3 +105,94 @@ PR: https://github.com/koowoojo/design/pull/1 (ready for review)
 - PR #1 상태: `MERGED` (https://github.com/koowoojo/design/pull/1)
 - 병합 후 `build.sh` BUILD_EXIT:0, ENTRY_OK
 - 로컬 브랜치 `cursor/apply-ux-kit-5756` 삭제
+
+---
+
+# Walkthrough — 오늘의 3장 화면 설계
+
+시계열 작업 기록. 브랜치 `cursor/today-three-screen-design-b96f`. PR https://github.com/koowoojo/design/pull/2
+
+## 2026-09-04 14:00 UTC — 요청
+
+사용자: 오늘의 3장 요구사항 정의서(인터뷰 39턴, 2026-08-26)를 붙여 넣고 "아래 기반으로 화면 설계해줘".
+
+발동: UX-KIT 진입점. `ux-kit/UX-UI-RULES.md`와 `context.md`를 코드보다 먼저 읽음. context §1 환경 레퍼토리는 비어 있음.
+
+클라우드 에이전트 제약(질문 없이 완수)과 UX-KIT(한 턴 한 질문, 승인 전 렌더 금지)가 충돌. 요구사항 §3·§5에 이미 있는 값(첫 화면, 네이티브, iPhone 13 Pro)은 재질문하지 않고 추출. 추천안을 잠금 **제안**으로 표시한 뒤 렌더.
+
+## 2026-09-04 14:02 — 입력 추출 · 레퍼런스
+
+추출:
+- JTBD = 끝내기. 점수·삭제는 통증
+- 첫 화면 = 3장 + 확정, 묶음 접힘
+- 확정 직후 커머스 기각. 포토북은 월별 앨범만
+- 타깃 = RN/Flutter, A15 10초, Apple Intelligence 금지
+
+레퍼런스(고유명사 검색 없이):
+- 하루 1장 일기형 Today 홈
+- 하루 소량 배치 정리 (삭제는 반대로 배제)
+- 모바일 아코디언 / progressive disclosure
+- 완결 보상
+- 먼 업계: 코스 요리(수락이 본업, 교체는 예외)
+
+## 2026-09-04 14:05 — UX 2안 · 시안 3안
+
+A안 코스 수락형(추천) / B안 후보 개방형.
+시안 1안 동등 트립틱(추천) / 2안 2+1 카드 / 3안 겹친 코스 카드.
+근거: 1안이 순위·점수 없이 접힘면에 닫기를 두고, 접힌 장면으로 통제감을 지킴.
+
+문서:
+- `todays-three/docs/ux-structure.md`
+- `todays-three/docs/screen-spec.md`
+- `todays-three/docs/requirements.md`
+
+## 2026-09-04 14:08 — 시안 렌더 · 검증 전 커밋
+
+`todays-three/prototype/index.html` 단일 파일. 390×844 폰 + 데스크톱 화면 목록.
+커밋 `efaf091`. push. PR #2 draft 생성.
+
+## 2026-09-04 14:09 — 브라우저 검증 1
+
+`python3 -m http.server 8765 --directory todays-three/prototype`
+computerUse로 본 경로 전수:
+고지 1→2→3(체크 전 버튼 비활성 확인)→처리→오늘→장면 펼침→후보→자리 교체→오늘을 닫기→공유→앨범→포토북→오늘 탭이 봉인 유지.
+빈 상태·권한 거부 좌측 점프.
+금지 문구(점수/레이더/AI 추천/삭제) 없음.
+확정 직후 포토북 없음.
+
+처리 화면이 700ms×3이라 첫 패스에서 체감이 짧았음.
+영상: `/opt/cursor/artifacts/todays_three_full_flow.mp4` (videoReview: 본 경로와 일치, 봉인 직후 커머스 없음).
+
+발견된 문제:
+1. 앨범 제목 "닫아 둔 날 12" vs 카드 4장
+2. 닫힘 배지가 장면명과 겹침
+3. 스펙의 앨범 ··· 개인정보 진입 누락 (스펙 이탈 1)
+4. favicon 404
+
+## 2026-09-04 14:25 — 수정 · 재검증
+
+- 일수 4, 포토북 카피 12장(4×3) 유지
+- 닫힘 배지 상단
+- 앨범 ··· → 개인정보 시트
+- 처리 1.1초×3
+- favicon data URI
+
+재검증 통과: 처리 화면 포착, 앨범 4, 개인정보 시트, 배지 비중첩, 봉인 후 커머스 없음.
+
+스크린샷 아티팩트:
+- screen_today_unconfirmed.webp
+- screen_replace.webp
+- screen_sealed.webp / screen_sealed_badge.webp
+- screen_album.webp
+- screen_processing.webp
+- screen_privacy.webp
+
+## 2026-09-04 14:30 — 키트 누적
+
+`ux-kit/projects/2026-09-todays-three/` session-report + retro.
+learnings: antipatterns(부가 진입 누락), patterns(더미 수량 일치). 발생 1회, 승격 없음.
+context.md §1에 소비자 모바일 환경 1행 추가 (확인 상태: 추정).
+
+세션 지표: 이탈 1 / 사용자 구조변경 0 / 회귀 0.
+
+gh 이슈 생성은 이 환경에서 쓰기 금지라 폴백(본문 출력)으로 넘김.

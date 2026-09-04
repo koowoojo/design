@@ -4,6 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <title>오늘의 3장 — 화면 시안</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><rect width='64' height='64' rx='14' fill='%23c45c26'/></svg>" />
   <!--
     목적: UX-KIT [4] 렌더링. 잠금 제안(여정 A · 시안 1안)을 390×844에서 클릭으로 검증한다.
     특징: 동등 트립틱, 접힌 장면, 확정 직후 커머스 없음, 점수·AI 문구 없음.
@@ -216,13 +217,14 @@
     .slot.sealed::after {
       content: "닫힘";
       position: absolute;
-      left: 8px; bottom: 8px;
+      top: 8px; left: 8px;
       background: var(--olive);
       color: #f4f7ef;
       font-size: 10px;
       font-weight: 600;
       padding: 3px 7px;
       border-radius: 999px;
+      z-index: 1;
     }
     .slot svg, .slot img { width: 100%; height: 100%; display: block; }
     .slot .cap {
@@ -490,6 +492,7 @@
       sealed: { title: "오늘 · 봉인", goal: "닫혔다는 감각. 다음 할 일 없음", hier: "닫힌 카드 > 공유(선택)" },
       share: { title: "공유 시트", goal: "3장 내보내기. 마감 유지", hier: "채널 3개 > 닫기" },
       album: { title: "월별 앨범", goal: "쌓인 카드를 본다", hier: "월 그리드 > 포토북 CTA" },
+      privacy: { title: "개인정보 고지", goal: "앨범 ···에서만 연다", hier: "고지 > 닫기" },
       book: { title: "포토북", goal: "앨범에서만 커머스", hier: "설명 > 나중에" },
       empty: { title: "빈 상태", goal: "오늘 할 일 없음을 분명히", hier: "한 줄 > 앨범은 유지" },
       denied: { title: "권한 거부", goal: "다음 행동 하나", hier: "이유 > 설정에서 허용" }
@@ -613,6 +616,16 @@
         </div>`;
     }
 
+    function privacySheet() {
+      return `<div class="sheet-dim" data-act="close-privacy"></div>
+        <div class="sheet" role="dialog" aria-label="개인정보처리방침">
+          <div class="grab"></div>
+          <h2 class="display" style="margin:0 0 8px;font-size:22px">개인정보 처리</h2>
+          <p class="lede">아동 사진의 원본은 기기에 남습니다. 후보 미리보기만 잠깐 전송되며 서버에 저장하지 않습니다. 시안용 더미 고지입니다.</p>
+          <button class="btn btn-primary" type="button" data-act="close-privacy">닫기</button>
+        </div>`;
+    }
+
     function bookSheet() {
       return `<div class="sheet-dim" data-act="close-book"></div>
         <div class="sheet" role="dialog" aria-label="포토북">
@@ -637,8 +650,11 @@
       </button>`).join("");
       return `${statusBar()}
         <div class="app-body">
-          <p class="kicker">2026년 9월</p>
-          <h1 class="display title">닫아 둔 날 12</h1>
+          <div style="display:flex;justify-content:space-between;align-items:flex-start">
+            <p class="kicker">2026년 9월</p>
+            <button type="button" class="btn-ghost" data-act="open-privacy" aria-label="더보기" style="width:auto;min-height:44px;padding:0 8px">···</button>
+          </div>
+          <h1 class="display title">닫아 둔 날 4</h1>
           <p class="lede">하루가 카드로 쌓입니다.</p>
           <div class="month-grid">${cards}</div>
           <div class="album-cta">
@@ -647,7 +663,8 @@
           </div>
         </div>
         ${tabs("album")}
-        ${withBook ? bookSheet() : ""}`;
+        ${withBook ? bookSheet() : ""}
+        ${state.screen === "privacy" ? privacySheet() : ""}`;
     }
 
     function renderOnb(step) {
@@ -721,6 +738,7 @@
         share: () => renderToday("share"),
         album: () => renderAlbum(false),
         book: () => renderAlbum(true),
+        privacy: () => renderAlbum(false),
         empty: renderEmpty,
         denied: renderDenied
       };
@@ -736,7 +754,7 @@
     function go(screen) {
       state.screen = screen;
       if (screen === "today" || screen === "replace" || screen === "sealed" || screen === "share") state.tab = "today";
-      if (screen === "album" || screen === "book") state.tab = "album";
+      if (screen === "album" || screen === "book" || screen === "privacy") state.tab = "album";
       if (screen === "sealed" || screen === "share") state.sealed = true;
       if (screen === "today" || screen === "replace") state.sealed = false;
       if (screen !== "replace") state.replacingId = null;
@@ -746,7 +764,7 @@
     function runProcess() {
       state.processStep = 0;
       go("process");
-      const ticks = [700, 700, 700];
+      const ticks = [1100, 1100, 1100];
       let i = 0;
       const step = () => {
         if (state.screen !== "process") return;
@@ -852,6 +870,12 @@
           go("book");
           break;
         case "close-book":
+          go("album");
+          break;
+        case "open-privacy":
+          go("privacy");
+          break;
+        case "close-privacy":
           go("album");
           break;
         case "book-dummy":
