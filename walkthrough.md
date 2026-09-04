@@ -77,3 +77,12 @@
 - `ux-kit/build.sh` 종료 코드 0 — `✅ 생성 완료: dist/SETUP-UX-KIT.md (580 lines) / 진입점 24줄`
 
 UX 화면 설계는 시작하지 않음. SETUP 지시대로 설치까지만 수행.
+
+커밋: `742cad9` `feat(ux-kit): SETUP-UX-KIT 설치와 업스트림 소스 복원`
+PR: https://github.com/koowoojo/design/pull/1 (ready for review)
+
+재검증 (완료 직전):
+- ENTRY_OK / BODY_OK / CONTEXT_OK / DIRS_OK
+- 진입점 24줄
+- `build.sh` BUILD_EXIT:0
+- 워킹트리 클린
