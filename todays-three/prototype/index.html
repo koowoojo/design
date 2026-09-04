@@ -215,7 +215,7 @@
     }
     .slot.pick { border-color: var(--clay); }
     .slot.sealed::after {
-      content: "닫힘";
+      content: "확정";
       position: absolute;
       top: 8px; left: 8px;
       background: var(--olive);
@@ -473,6 +473,70 @@
      * 시안 상태 기계.
      * 제품 로직이 아니라 화면 전환·교체·봉인을 리뷰용으로 재현한다.
      */
+    /**
+     * 사용자에게 보이는 한국어. 부모 전제가 아니라 사진을 많이 찍는 일반인 기준.
+     * 내부 은유(닫기·봉인·자리)와 법률 용어를 버튼·본문에 쓰지 않는다.
+     */
+    const COPY = {
+      onb1Kicker: "오늘의 3장",
+      onb1Title: "오늘 사진,<br>3장만 고르면 끝",
+      onb1Lede: "많이 찍어도 괜찮아요. 오늘 남길 사진 3장만 고르면 정리는 끝이에요.",
+      onb1Cta: "시작하기",
+      onb2Kicker: "안심하고 쓰세요",
+      onb2Title: "원본 사진은<br>이 폰에만 있어요",
+      onb2Lede1: "고를 때 쓰는 작은 미리보기만 잠시 보내요. 서버에는 저장하지 않아요.",
+      onb2Lede2: "나머지 사진은 그대로 두고, 지우지 않아요.",
+      onb2Cta: "다음",
+      onb3Kicker: "권한이 필요해요",
+      onb3Title: "사진첩을<br>볼 수 있게 해 주세요",
+      onb3Lede: "오늘 찍은 사진을 읽어 3장을 고릅니다. 다른 사람 사진이 있다면, 골라도 되는 사진인지만 확인해 주세요.",
+      onb3Check: "이 사진으로 3장을 골라도 괜찮아요",
+      onb3Cta: "사진첩 허용",
+      onb3Skip: "나중에",
+      processKicker: "조금만 기다려 주세요",
+      processLines: [
+        "비슷한 사진끼리 나누는 중",
+        "흐릿한 사진을 걸러내는 중",
+        "오늘 남길 3장을 고르는 중"
+      ],
+      todayTitle: "오늘의 3장",
+      todayLede: "이 3장이면 오늘 정리는 끝이에요.",
+      todayCta: "이걸로 결정",
+      scenesLabel: "다른 사진",
+      candidates: "사진 2장",
+      replaceHint: "바꿀 사진을 눌러 주세요",
+      toastReplaced: "사진을 바꿨어요",
+      sealedTitle: "오늘 사진이 정해졌어요",
+      sealedLede: "이 3장은 앨범에도 넣어 두었어요. 원본은 그대로예요.",
+      sealedShare: "공유하기",
+      shareTitle: "어디에 보낼까요",
+      shareLede: "지금 고른 3장을 보내요.",
+      shareMore: "더보기",
+      shareClose: "닫기",
+      albumTitle: "9월에 고른 날 4일",
+      albumLede: "날마다 고른 3장이 여기에 모여요.",
+      albumPhotos: "3장",
+      albumBookBlurb: "이번 달 고른 사진 12장으로 포토북을 만들 수 있어요.",
+      albumBookCta: "포토북 만들기",
+      bookTitle: "이번 달 포토북",
+      bookLede: "이번 달 고른 사진 12장으로 한 권을 만들어요. 가격은 아직 정하는 중이에요.",
+      bookCta: "알아보기",
+      bookLater: "나중에",
+      privacyTitle: "사진은 이렇게 다뤄요",
+      privacyLede: "원본은 휴대폰에 남아요. 고를 때 쓰는 작은 미리보기만 잠시 보내고, 서버에는 저장하지 않아요.",
+      privacyClose: "확인",
+      emptyTitle: "오늘 찍은<br>사진이 없어요",
+      emptyLede: "사진을 찍으면 여기서 3장을 고를 수 있어요.",
+      deniedKicker: "사진첩",
+      deniedTitle: "사진첩을<br>볼 수 없어요",
+      deniedLede: "오늘 사진을 고르려면 사진첩 권한이 필요해요. 원본은 휴대폰에 남아요.",
+      deniedCta: "설정에서 허용",
+      tabToday: "오늘",
+      tabAlbum: "앨범",
+      toastShareDummy: "아직 연결 전이에요",
+      toastBookDummy: "아직 준비 중이에요"
+    };
+
     const SCENES = [
       { id: "walk", time: "10:14", name: "오전 산책", colors: ["#c8d5a7", "#8fa56a", "#efe6c9"] },
       { id: "lunch", time: "12:40", name: "점심 식탁", colors: ["#f0d3a2", "#d7a15a", "#fff6e4"] },
@@ -485,11 +549,11 @@
     const NOTES = {
       onb1: { title: "고지 1", goal: "하루를 닫는 도구임을 한 번에", hier: "한 줄 정의 > 계속" },
       onb2: { title: "고지 2", goal: "원본 미전송을 고지", hier: "세 줄 사실 > 알겠어요" },
-      onb3: { title: "고지 3", goal: "법정대리인 확인 후 권한", hier: "체크 > 사진 접근 허용" },
+      onb3: { title: "고지 3", goal: "사진첩 권한. 부모 전제 없음", hier: "체크 > 사진첩 허용" },
       process: { title: "처리 중", goal: "평가가 아닌 기다림", hier: "문구 하나 > 진행 바" },
-      today: { title: "오늘 · 미확정", goal: "결정을 끝낸다", hier: "동등 3장 > 닫기 > 장면" },
-      replace: { title: "교체 중", goal: "못 믿을 때만 자리 교체", hier: "트립틱 자리 > 후보" },
-      sealed: { title: "오늘 · 봉인", goal: "닫혔다는 감각. 다음 할 일 없음", hier: "닫힌 카드 > 공유(선택)" },
+      today: { title: "오늘 · 미확정", goal: "결정을 끝낸다", hier: "동등 3장 > 이걸로 결정 > 다른 사진" },
+      replace: { title: "교체 중", goal: "못 믿을 때만 사진 교체", hier: "3장 > 다른 사진" },
+      sealed: { title: "오늘 · 확정", goal: "정해졌다는 감각. 다음 할 일 없음", hier: "확정된 3장 > 공유(선택)" },
       share: { title: "공유 시트", goal: "3장 내보내기. 마감 유지", hier: "채널 3개 > 닫기" },
       album: { title: "월별 앨범", goal: "쌓인 카드를 본다", hier: "월 그리드 > 포토북 CTA" },
       privacy: { title: "개인정보 고지", goal: "앨범 ···에서만 연다", hier: "고지 > 닫기" },
@@ -532,8 +596,8 @@
 
     function tabs(active) {
       return `<nav class="tabs" aria-label="주요">
-        <button type="button" data-act="tab-today" aria-current="${active === "today" ? "page" : "false"}">오늘</button>
-        <button type="button" data-act="tab-album" aria-current="${active === "album" ? "page" : "false"}">앨범</button>
+        <button type="button" data-act="tab-today" aria-current="${active === "today" ? "page" : "false"}">${COPY.tabToday}</button>
+        <button type="button" data-act="tab-album" aria-current="${active === "album" ? "page" : "false"}">${COPY.tabAlbum}</button>
       </nav>`;
     }
 
@@ -561,13 +625,13 @@
           <button type="button" class="scene-h" data-act="toggle-scene" data-id="${s.id}">
             <div>
               <strong>${s.name}</strong>
-              <span>${s.time} · 후보 2장</span>
+              <span>${s.time} · ${COPY.candidates}</span>
             </div>
             <span class="chev">${open ? "▾" : "▸"}</span>
           </button>
           <div class="cands">
-            <button type="button" class="cand" data-act="cand" data-id="${s.id}" data-v="0" aria-label="${s.name} 후보 1">${art(s, 0)}</button>
-            <button type="button" class="cand" data-act="cand" data-id="${s.id}" data-v="1" aria-label="${s.name} 후보 2">${art(s, 1)}</button>
+            <button type="button" class="cand" data-act="cand" data-id="${s.id}" data-v="0" aria-label="${s.name} 사진 1">${art(s, 0)}</button>
+            <button type="button" class="cand" data-act="cand" data-id="${s.id}" data-v="1" aria-label="${s.name} 사진 2">${art(s, 1)}</button>
           </div>
         </div>`;
       }).join("");
@@ -580,21 +644,19 @@
     function renderToday(kind) {
       const sealed = kind === "sealed" || kind === "share";
       const replacing = kind === "replace";
-      const title = sealed ? "오늘이 닫혔어요" : "오늘의 3장";
-      const lede = sealed
-        ? "이 3장은 오늘 카드와 앨범에 남겨 두었어요. 원본은 그대로입니다."
-        : "이 3장이면 오늘을 닫을 수 있어요.";
+      const title = sealed ? COPY.sealedTitle : COPY.todayTitle;
+      const lede = sealed ? COPY.sealedLede : COPY.todayLede;
       return `${statusBar()}
         <div class="app-body">
           <p class="kicker">9월 4일 금요일</p>
           <h1 class="display title">${title}</h1>
           <p class="lede">${lede}</p>
-          ${replacing ? `<p class="pick-hint">어느 자리를 바꿀까요</p>` : ""}
+          ${replacing ? `<p class="pick-hint">${COPY.replaceHint}</p>` : ""}
           ${triptych(sealed, replacing)}
           ${sealed
-            ? `<div class="cta-wrap"><button class="btn btn-secondary" type="button" data-act="open-share">3장 공유</button></div>`
-            : `<div class="cta-wrap"><button class="btn btn-primary" type="button" data-act="seal">오늘을 닫기</button></div>`}
-          ${sealed ? "" : `<p class="kicker" style="margin-bottom:4px">장면 6</p>${sceneList()}`}
+            ? `<div class="cta-wrap"><button class="btn btn-secondary" type="button" data-act="open-share">${COPY.sealedShare}</button></div>`
+            : `<div class="cta-wrap"><button class="btn btn-primary" type="button" data-act="seal">${COPY.todayCta}</button></div>`}
+          ${sealed ? "" : `<p class="kicker" style="margin-bottom:4px">${COPY.scenesLabel}</p>${sceneList()}`}
         </div>
         ${tabs("today")}
         ${toastHtml()}
@@ -605,14 +667,14 @@
       return `<div class="sheet-dim" data-act="close-sheet"></div>
         <div class="sheet" role="dialog" aria-label="공유">
           <div class="grab"></div>
-          <h2 class="display" style="margin:0 0 8px;font-size:22px">3장 보내기</h2>
-          <p class="lede">오늘이 닫힌 뒤에 내보냅니다.</p>
+          <h2 class="display" style="margin:0 0 8px;font-size:22px">${COPY.shareTitle}</h2>
+          <p class="lede">${COPY.shareLede}</p>
           <div class="share-row">
             <button type="button" data-act="share-dummy">카카오톡</button>
             <button type="button" data-act="share-dummy">인스타</button>
-            <button type="button" data-act="share-dummy">더보기</button>
+            <button type="button" data-act="share-dummy">${COPY.shareMore}</button>
           </div>
-          <button class="btn btn-ghost" type="button" data-act="close-sheet">닫기</button>
+          <button class="btn btn-ghost" type="button" data-act="close-sheet">${COPY.shareClose}</button>
         </div>`;
     }
 
@@ -620,9 +682,9 @@
       return `<div class="sheet-dim" data-act="close-privacy"></div>
         <div class="sheet" role="dialog" aria-label="개인정보처리방침">
           <div class="grab"></div>
-          <h2 class="display" style="margin:0 0 8px;font-size:22px">개인정보 처리</h2>
-          <p class="lede">아동 사진의 원본은 기기에 남습니다. 후보 미리보기만 잠깐 전송되며 서버에 저장하지 않습니다. 시안용 더미 고지입니다.</p>
-          <button class="btn btn-primary" type="button" data-act="close-privacy">닫기</button>
+          <h2 class="display" style="margin:0 0 8px;font-size:22px">${COPY.privacyTitle}</h2>
+          <p class="lede">${COPY.privacyLede}</p>
+          <button class="btn btn-primary" type="button" data-act="close-privacy">${COPY.privacyClose}</button>
         </div>`;
     }
 
@@ -630,10 +692,10 @@
       return `<div class="sheet-dim" data-act="close-book"></div>
         <div class="sheet" role="dialog" aria-label="포토북">
           <div class="grab"></div>
-          <h2 class="display" style="margin:0 0 8px;font-size:22px">이번 달 포토북</h2>
-          <p class="lede">닫아 둔 12장으로 한 권을 만듭니다. 가격은 제휴 후 정해집니다.</p>
-          <button class="btn btn-primary" type="button" data-act="book-dummy" style="margin:8px 0">자세히 알아보기</button>
-          <button class="btn btn-ghost" type="button" data-act="close-book">나중에</button>
+          <h2 class="display" style="margin:0 0 8px;font-size:22px">${COPY.bookTitle}</h2>
+          <p class="lede">${COPY.bookLede}</p>
+          <button class="btn btn-primary" type="button" data-act="book-dummy" style="margin:8px 0">${COPY.bookCta}</button>
+          <button class="btn btn-ghost" type="button" data-act="close-book">${COPY.bookLater}</button>
         </div>`;
     }
 
@@ -646,7 +708,7 @@
       ];
       const cards = days.map((day) => `<button class="day-card" type="button" data-act="${day.today ? "tab-today" : "noop"}">
         <div class="mini">${day.ids.map((id) => `<div>${art(sceneById(id), 0)}</div>`).join("")}</div>
-        <figcaption><strong>${day.d}</strong>3장</figcaption>
+        <figcaption><strong>${day.d}</strong>${COPY.albumPhotos}</figcaption>
       </button>`).join("");
       return `${statusBar()}
         <div class="app-body">
@@ -654,12 +716,12 @@
             <p class="kicker">2026년 9월</p>
             <button type="button" class="btn-ghost" data-act="open-privacy" aria-label="더보기" style="width:auto;min-height:44px;padding:0 8px">···</button>
           </div>
-          <h1 class="display title">닫아 둔 날 4</h1>
-          <p class="lede">하루가 카드로 쌓입니다.</p>
+          <h1 class="display title">${COPY.albumTitle}</h1>
+          <p class="lede">${COPY.albumLede}</p>
           <div class="month-grid">${cards}</div>
           <div class="album-cta">
-            <p>이번 달 12장으로 포토북을 만들 수 있어요.</p>
-            <button class="btn btn-secondary" type="button" data-act="open-book">포토북 만들기</button>
+            <p>${COPY.albumBookBlurb}</p>
+            <button class="btn btn-secondary" type="button" data-act="open-book">${COPY.albumBookCta}</button>
           </div>
         </div>
         ${tabs("album")}
@@ -670,58 +732,57 @@
     function renderOnb(step) {
       if (step === 1) {
         return `${statusBar()}<div class="app-body">
-          <p class="kicker">가칭</p>
-          <h1 class="display title">오늘을<br>3장으로 닫아요</h1>
+          <p class="kicker">${COPY.onb1Kicker}</p>
+          <h1 class="display title">${COPY.onb1Title}</h1>
           <div class="onb-art" aria-hidden="true"><i></i></div>
-          <p class="lede">밤에 쌓인 사진을 다시 훑지 않아도 되게. 오늘의 세트를 고르고 하루를 끝냅니다.</p>
-          <button class="btn btn-primary" type="button" data-act="to-onb2">계속</button>
+          <p class="lede">${COPY.onb1Lede}</p>
+          <button class="btn btn-primary" type="button" data-act="to-onb2">${COPY.onb1Cta}</button>
         </div>`;
       }
       if (step === 2) {
         return `${statusBar()}<div class="app-body">
-          <p class="kicker">사진 취급</p>
-          <h1 class="display title">원본은<br>기기 밖으로<br>나가지 않아요</h1>
-          <p class="lede">후보 열다섯 장쯤의 작은 미리보기만 잠깐 보냅니다. 서버에 저장하지 않습니다.</p>
-          <p class="lede">나머지 사진은 이 앱이 지우거나 옮기지 않습니다.</p>
-          <button class="btn btn-primary" type="button" data-act="to-onb3">알겠어요</button>
+          <p class="kicker">${COPY.onb2Kicker}</p>
+          <h1 class="display title">${COPY.onb2Title}</h1>
+          <p class="lede">${COPY.onb2Lede1}</p>
+          <p class="lede">${COPY.onb2Lede2}</p>
+          <button class="btn btn-primary" type="button" data-act="to-onb3">${COPY.onb2Cta}</button>
         </div>`;
       }
       return `${statusBar()}<div class="app-body">
-        <p class="kicker">동의</p>
-        <h1 class="display title">아이 사진을<br>다루기 전에</h1>
-        <p class="lede">만 14세 미만 아동의 사진은 법정대리인 동의가 필요합니다. 사용자는 부모입니다.</p>
+        <p class="kicker">${COPY.onb3Kicker}</p>
+        <h1 class="display title">${COPY.onb3Title}</h1>
+        <p class="lede">${COPY.onb3Lede}</p>
         <label class="check">
           <input type="checkbox" id="guardian" ${state.consented ? "checked" : ""} />
-          <span>나는 이 아이의 법정대리인입니다</span>
+          <span>${COPY.onb3Check}</span>
         </label>
-        <button class="btn btn-primary" type="button" data-act="ask-perm" ${state.consented ? "" : "disabled"}>사진 접근 허용</button>
-        <button class="btn btn-ghost" type="button" data-act="deny-perm">지금은 허용하지 않음</button>
+        <button class="btn btn-primary" type="button" data-act="ask-perm" ${state.consented ? "" : "disabled"}>${COPY.onb3Cta}</button>
+        <button class="btn btn-ghost" type="button" data-act="deny-perm">${COPY.onb3Skip}</button>
       </div>`;
     }
 
     function renderProcess() {
-      const lines = ["오늘 사진을 장면으로 묶는 중", "잘 보이는 컷을 고르는 중", "오늘의 3장을 고르는 중"];
       const widths = ["28%", "62%", "94%"];
       return `${statusBar()}<div class="process">
-        <p class="kicker">잠시만요</p>
-        <h1 class="display title">${lines[state.processStep]}</h1>
+        <p class="kicker">${COPY.processKicker}</p>
+        <h1 class="display title">${COPY.processLines[state.processStep]}</h1>
         <div class="bar" aria-hidden="true"><i style="width:${widths[state.processStep]}"></i></div>
       </div>`;
     }
 
     function renderEmpty() {
       return `${statusBar()}<div class="empty">
-        <h1 class="display title">오늘 찍은<br>사진이 없어요</h1>
-        <p class="lede">내일, 사진이 쌓이면 여기로 돌아오면 됩니다.</p>
+        <h1 class="display title">${COPY.emptyTitle}</h1>
+        <p class="lede">${COPY.emptyLede}</p>
       </div>${tabs("today")}`;
     }
 
     function renderDenied() {
       return `${statusBar()}<div class="app-body">
-        <p class="kicker">사진 접근</p>
-        <h1 class="display title">사진을 읽을 수<br>없어요</h1>
-        <p class="lede">오늘의 3장을 고르려면 사진 접근이 필요합니다. 원본은 기기에 남습니다.</p>
-        <button class="btn btn-primary" type="button" data-act="to-onb3">설정에서 허용</button>
+        <p class="kicker">${COPY.deniedKicker}</p>
+        <h1 class="display title">${COPY.deniedTitle}</h1>
+        <p class="lede">${COPY.deniedLede}</p>
+        <button class="btn btn-primary" type="button" data-act="to-onb3">${COPY.deniedCta}</button>
       </div>`;
     }
 
@@ -850,7 +911,7 @@
             state.replacingId = null;
             state.openScene = null;
             go("today");
-            flash("자리를 바꿨어요");
+            flash(COPY.toastReplaced);
           }
           break;
         case "seal":
@@ -863,7 +924,7 @@
           go("sealed");
           break;
         case "share-dummy":
-          flash("시안 — 실제로 보내지는 않습니다");
+          flash(COPY.toastShareDummy);
           go("sealed");
           break;
         case "open-book":
@@ -879,7 +940,7 @@
           go("album");
           break;
         case "book-dummy":
-          flash("시안 — 제휴 전입니다");
+          flash(COPY.toastBookDummy);
           go("album");
           break;
         case "noop":
