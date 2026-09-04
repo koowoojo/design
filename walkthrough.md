@@ -86,3 +86,14 @@ PR: https://github.com/koowoojo/design/pull/1 (ready for review)
 - 진입점 24줄
 - `build.sh` BUILD_EXIT:0
 - 워킹트리 클린
+
+## 2026-09-04 14:00 UTC — main 병합 요청
+
+사용자: "main으로 합쳐줘". finishing-a-development-branch 스킬 적용. 선택지는 이미 사용자가 지정함 (main 병합).
+
+병합 전 재검증:
+- ENTRY_OK / BODY_OK / CONTEXT_OK
+- `build.sh` BUILD_EXIT:0
+- PR #1 `MERGEABLE` / `CLEAN`
+- CI 체크 없음 (문서·규칙 설치 PR)
+- 베이스: `origin/main` (`e64901b`)
