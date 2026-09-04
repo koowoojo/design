@@ -1,0 +1,880 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>오늘의 3장 — 화면 시안</title>
+  <!--
+    목적: UX-KIT [4] 렌더링. 잠금 제안(여정 A · 시안 1안)을 390×844에서 클릭으로 검증한다.
+    특징: 동등 트립틱, 접힌 장면, 확정 직후 커머스 없음, 점수·AI 문구 없음.
+    토큰은 임의값. 더미 장면명·날짜만 사용. 실재 아동 얼굴 없음.
+  -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+KR:wght@400;500;600;700&family=Ibarra+Real+Nova:ital,wght@0,500;0,600;1,500&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --paper: #f3ede3;
+      --paper-deep: #e8dfd2;
+      --ink: #1f1a14;
+      --mute: #6f675c;
+      --line: #e0d4c4;
+      --clay: #c45c26;
+      --clay-ink: #fffaf4;
+      --olive: #3e5340;
+      --olive-soft: #dfe6d8;
+      --danger: #8f3a2a;
+      --shadow: 0 18px 50px rgba(31, 26, 20, 0.18);
+      --radius: 16px;
+      --phone-w: 390px;
+      --phone-h: 844px;
+    }
+
+    * { box-sizing: border-box; }
+    html, body { margin: 0; height: 100%; }
+    body {
+      font-family: "IBM Plex Sans KR", sans-serif;
+      color: var(--ink);
+      background: #cfc4b4;
+    }
+
+    /* 데스크톱 리뷰 뼈대. 390 이하에서는 앱만 보인다. */
+    .studio {
+      min-height: 100%;
+      display: grid;
+      grid-template-columns: 240px 1fr 280px;
+      gap: 24px;
+      padding: 28px;
+    }
+    .panel {
+      background: #efe7db;
+      border: 1px solid #d8cbb8;
+      border-radius: 20px;
+      padding: 18px 16px;
+      overflow: auto;
+    }
+    .panel h1, .panel h2 {
+      font-family: "Ibarra Real Nova", serif;
+      margin: 0 0 8px;
+    }
+    .panel h1 { font-size: 22px; }
+    .panel h2 { font-size: 13px; letter-spacing: 0.04em; text-transform: uppercase; color: var(--mute); }
+    .panel p, .panel li { font-size: 13px; line-height: 1.55; color: #3d372f; }
+    .panel .hint { color: var(--mute); font-size: 12px; margin-bottom: 14px; }
+
+    .nav-btn {
+      display: block;
+      width: 100%;
+      text-align: left;
+      border: 0;
+      background: transparent;
+      color: var(--ink);
+      font: inherit;
+      font-size: 13px;
+      padding: 9px 10px;
+      border-radius: 10px;
+      cursor: pointer;
+    }
+    .nav-btn[aria-current="true"] { background: #fff8ee; font-weight: 600; }
+    .nav-btn:hover { background: rgba(255, 248, 238, 0.7); }
+    .nav-group { margin: 14px 0 8px; font-size: 11px; color: var(--mute); }
+
+    .stage {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .phone {
+      width: var(--phone-w);
+      height: var(--phone-h);
+      background: #111;
+      border-radius: 44px;
+      padding: 12px;
+      box-shadow: var(--shadow);
+      position: relative;
+    }
+    .phone-glass {
+      height: 100%;
+      background: var(--paper);
+      border-radius: 34px;
+      overflow: hidden;
+      position: relative;
+    }
+    .notch {
+      position: absolute;
+      top: 0; left: 50%;
+      transform: translateX(-50%);
+      width: 126px; height: 28px;
+      background: #111;
+      border-radius: 0 0 16px 16px;
+      z-index: 8;
+    }
+
+    .app {
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      background: var(--paper);
+    }
+
+    .status {
+      height: 52px;
+      padding: 18px 22px 0;
+      display: flex;
+      justify-content: space-between;
+      font-size: 12px;
+      font-weight: 600;
+    }
+
+    .app-body {
+      flex: 1;
+      overflow: auto;
+      padding: 8px 20px 16px;
+    }
+    .app-body.no-pad { padding: 0; }
+
+    .tabs {
+      height: 78px;
+      border-top: 1px solid var(--line);
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      background: #f7f1e8;
+      padding-bottom: 16px;
+    }
+    .tabs button {
+      border: 0;
+      background: transparent;
+      font: inherit;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--mute);
+      cursor: pointer;
+    }
+    .tabs button[aria-current="page"] { color: var(--ink); }
+
+    .display {
+      font-family: "Ibarra Real Nova", serif;
+      font-weight: 600;
+    }
+    .kicker { font-size: 12px; color: var(--mute); letter-spacing: 0.02em; }
+    .title { font-size: 28px; line-height: 1.2; margin: 4px 0 8px; }
+    .lede { font-size: 14px; color: var(--mute); line-height: 1.5; margin: 0 0 16px; }
+
+    .btn {
+      width: 100%;
+      border: 0;
+      border-radius: 999px;
+      min-height: 52px;
+      font: inherit;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+    .btn-primary { background: var(--clay); color: var(--clay-ink); }
+    .btn-primary:disabled { opacity: 0.4; cursor: not-allowed; }
+    .btn-ghost {
+      background: transparent;
+      color: var(--ink);
+      text-decoration: underline;
+      text-underline-offset: 3px;
+      min-height: 44px;
+    }
+    .btn-secondary {
+      background: #fff;
+      color: var(--ink);
+      border: 1px solid var(--line);
+    }
+
+    .check {
+      display: flex;
+      gap: 10px;
+      align-items: flex-start;
+      font-size: 14px;
+      line-height: 1.45;
+      margin: 22px 0;
+    }
+    .check input { width: 20px; height: 20px; margin-top: 2px; accent-color: var(--clay); }
+
+    .triptych {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 6px;
+      height: 248px;
+      margin-bottom: 14px;
+    }
+    .slot {
+      position: relative;
+      border-radius: 14px;
+      overflow: hidden;
+      background: var(--paper-deep);
+      border: 2px solid transparent;
+      padding: 0;
+      cursor: pointer;
+    }
+    .slot.pick { border-color: var(--clay); }
+    .slot.sealed::after {
+      content: "닫힘";
+      position: absolute;
+      left: 8px; bottom: 8px;
+      background: var(--olive);
+      color: #f4f7ef;
+      font-size: 10px;
+      font-weight: 600;
+      padding: 3px 7px;
+      border-radius: 999px;
+    }
+    .slot svg, .slot img { width: 100%; height: 100%; display: block; }
+    .slot .cap {
+      position: absolute;
+      left: 0; right: 0; bottom: 0;
+      padding: 18px 6px 6px;
+      background: linear-gradient(transparent, rgba(20, 14, 8, 0.55));
+      color: #fff;
+      font-size: 11px;
+      font-weight: 500;
+    }
+
+    .cta-wrap { margin: 4px 0 18px; }
+
+    .scene {
+      border-top: 1px solid var(--line);
+    }
+    .scene-h {
+      width: 100%;
+      min-height: 56px;
+      border: 0;
+      background: transparent;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font: inherit;
+      text-align: left;
+      padding: 8px 0;
+      cursor: pointer;
+    }
+    .scene-h strong { display: block; font-size: 15px; }
+    .scene-h span { font-size: 12px; color: var(--mute); }
+    .chev { color: var(--mute); font-size: 18px; }
+    .cands {
+      display: none;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      padding: 0 0 12px;
+    }
+    .scene.open .cands { display: grid; }
+    .cand {
+      border: 0;
+      padding: 0;
+      border-radius: 12px;
+      overflow: hidden;
+      height: 132px;
+      background: var(--paper-deep);
+      cursor: pointer;
+      position: relative;
+    }
+    .cand svg { width: 100%; height: 100%; display: block; }
+    .toast {
+      position: absolute;
+      left: 20px; right: 20px; bottom: 96px;
+      background: var(--ink);
+      color: #fff8ee;
+      text-align: center;
+      padding: 12px;
+      border-radius: 12px;
+      font-size: 13px;
+      z-index: 6;
+    }
+
+    .process {
+      min-height: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 40px 28px 80px;
+    }
+    .bar {
+      height: 4px;
+      background: var(--line);
+      border-radius: 99px;
+      overflow: hidden;
+      margin-top: 28px;
+    }
+    .bar > i {
+      display: block;
+      height: 100%;
+      width: 8%;
+      background: var(--clay);
+      border-radius: 99px;
+      transition: width 0.4s ease;
+    }
+
+    .sheet-dim {
+      position: absolute;
+      inset: 0;
+      background: rgba(31, 26, 20, 0.35);
+      z-index: 9;
+    }
+    .sheet {
+      position: absolute;
+      left: 0; right: 0; bottom: 0;
+      background: #fffaf3;
+      border-radius: 22px 22px 0 0;
+      padding: 12px 20px 28px;
+      z-index: 10;
+    }
+    .grab {
+      width: 42px; height: 4px;
+      background: var(--line);
+      border-radius: 99px;
+      margin: 4px auto 16px;
+    }
+    .share-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 10px;
+      margin: 8px 0 12px;
+    }
+    .share-row button {
+      border: 1px solid var(--line);
+      background: #fff;
+      border-radius: 16px;
+      min-height: 88px;
+      font: inherit;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    .month-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+    .day-card {
+      border: 0;
+      background: #fff;
+      border-radius: 16px;
+      overflow: hidden;
+      text-align: left;
+      padding: 0;
+      font: inherit;
+      cursor: pointer;
+      box-shadow: 0 1px 0 var(--line);
+    }
+    .day-card .mini {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      height: 84px;
+    }
+    .day-card .mini > div { overflow: hidden; }
+    .day-card .mini svg { width: 140%; height: 100%; margin-left: -20%; }
+    .day-card figcaption { padding: 8px 10px 10px; font-size: 12px; color: var(--mute); }
+    .day-card strong { display: block; color: var(--ink); font-size: 14px; }
+
+    .album-cta {
+      margin-top: 18px;
+      padding: 14px;
+      background: #fff8ee;
+      border: 1px solid var(--line);
+      border-radius: 16px;
+    }
+    .album-cta p { margin: 0 0 10px; font-size: 14px; }
+
+    .empty {
+      min-height: 70%;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      text-align: center;
+      padding: 24px;
+    }
+
+    .onb-art {
+      height: 168px;
+      border-radius: 20px;
+      background:
+        linear-gradient(160deg, #ecd8b8 0%, #d7c3a3 46%, #c4b49a 100%);
+      margin: 12px 0 22px;
+      position: relative;
+      overflow: hidden;
+    }
+    .onb-art i {
+      position: absolute;
+      inset: 28px 48px;
+      border-radius: 12px;
+      background: #f7efe4;
+      box-shadow: 8px 10px 0 #b5522a33;
+    }
+
+    .pick-hint {
+      font-size: 13px;
+      color: var(--clay);
+      font-weight: 600;
+      margin: -6px 0 10px;
+    }
+
+    .notes dt { font-size: 11px; color: var(--mute); margin-top: 12px; }
+    .notes dd { margin: 3px 0 0; font-size: 13px; }
+
+    @media (max-width: 920px) {
+      .studio { grid-template-columns: 1fr; padding: 0; background: #111; }
+      .panel { display: none; }
+      .stage { min-height: 100vh; }
+      .phone { width: 100vw; height: 100vh; border-radius: 0; padding: 0; box-shadow: none; }
+      .phone-glass { border-radius: 0; }
+      .notch { display: none; }
+    }
+  </style>
+</head>
+<body>
+  <div class="studio">
+    <aside class="panel" aria-label="화면 목록">
+      <h1>오늘의 3장</h1>
+      <p class="hint">시안 1안 · 여정 A. 왼쪽에서 화면을 건너뛸 수 있다. 폰 안 흐름이 본 경로다.</p>
+      <div class="nav-group">고지</div>
+      <button class="nav-btn" data-jump="onb1">고지 1 · 무엇</button>
+      <button class="nav-btn" data-jump="onb2">고지 2 · 사진</button>
+      <button class="nav-btn" data-jump="onb3">고지 3 · 동의</button>
+      <div class="nav-group">오늘</div>
+      <button class="nav-btn" data-jump="process">처리 중</button>
+      <button class="nav-btn" data-jump="today">오늘 · 미확정</button>
+      <button class="nav-btn" data-jump="replace">오늘 · 교체 중</button>
+      <button class="nav-btn" data-jump="sealed">오늘 · 봉인</button>
+      <button class="nav-btn" data-jump="share">공유 시트</button>
+      <div class="nav-group">앨범 · 예외</div>
+      <button class="nav-btn" data-jump="album">월별 앨범</button>
+      <button class="nav-btn" data-jump="book">포토북 시트</button>
+      <button class="nav-btn" data-jump="empty">빈 상태</button>
+      <button class="nav-btn" data-jump="denied">권한 거부</button>
+    </aside>
+
+    <div class="stage">
+      <div class="phone">
+        <div class="phone-glass">
+          <div class="notch" aria-hidden="true"></div>
+          <div class="app" id="app"></div>
+        </div>
+      </div>
+    </div>
+
+    <aside class="panel notes" aria-label="현재 화면 메모">
+      <h2>현재 화면</h2>
+      <dl id="note">
+        <dt>목적</dt><dd>—</dd>
+      </dl>
+    </aside>
+  </div>
+
+  <script>
+    /**
+     * 시안 상태 기계.
+     * 제품 로직이 아니라 화면 전환·교체·봉인을 리뷰용으로 재현한다.
+     */
+    const SCENES = [
+      { id: "walk", time: "10:14", name: "오전 산책", colors: ["#c8d5a7", "#8fa56a", "#efe6c9"] },
+      { id: "lunch", time: "12:40", name: "점심 식탁", colors: ["#f0d3a2", "#d7a15a", "#fff6e4"] },
+      { id: "nap", time: "14:22", name: "낮잠 무렵", colors: ["#c9d4dc", "#8ea0ad", "#eef3f6"] },
+      { id: "bath", time: "18:05", name: "목욕", colors: ["#b9d4d6", "#6f9ea3", "#e7f4f4"] },
+      { id: "play", time: "19:20", name: "저녁 놀이", colors: ["#e8b78a", "#c56b3a", "#f8e1c4"] },
+      { id: "window", time: "20:10", name: "창가", colors: ["#cbb6d4", "#7d6a8d", "#f3e9f6"] }
+    ];
+
+    const NOTES = {
+      onb1: { title: "고지 1", goal: "하루를 닫는 도구임을 한 번에", hier: "한 줄 정의 > 계속" },
+      onb2: { title: "고지 2", goal: "원본 미전송을 고지", hier: "세 줄 사실 > 알겠어요" },
+      onb3: { title: "고지 3", goal: "법정대리인 확인 후 권한", hier: "체크 > 사진 접근 허용" },
+      process: { title: "처리 중", goal: "평가가 아닌 기다림", hier: "문구 하나 > 진행 바" },
+      today: { title: "오늘 · 미확정", goal: "결정을 끝낸다", hier: "동등 3장 > 닫기 > 장면" },
+      replace: { title: "교체 중", goal: "못 믿을 때만 자리 교체", hier: "트립틱 자리 > 후보" },
+      sealed: { title: "오늘 · 봉인", goal: "닫혔다는 감각. 다음 할 일 없음", hier: "닫힌 카드 > 공유(선택)" },
+      share: { title: "공유 시트", goal: "3장 내보내기. 마감 유지", hier: "채널 3개 > 닫기" },
+      album: { title: "월별 앨범", goal: "쌓인 카드를 본다", hier: "월 그리드 > 포토북 CTA" },
+      book: { title: "포토북", goal: "앨범에서만 커머스", hier: "설명 > 나중에" },
+      empty: { title: "빈 상태", goal: "오늘 할 일 없음을 분명히", hier: "한 줄 > 앨범은 유지" },
+      denied: { title: "권한 거부", goal: "다음 행동 하나", hier: "이유 > 설정에서 허용" }
+    };
+
+    const state = {
+      screen: "onb1",
+      tab: "today",
+      consented: false,
+      sealed: false,
+      picks: ["walk", "bath", "play"],
+      openScene: null,
+      replacingId: null,
+      toast: "",
+      processStep: 0
+    };
+
+    /** 더미 장면 일러스트. 아동 얼굴 대신 색면·실루엣만 쓴다. */
+    function art(scene, variant) {
+      const [a, b, c] = scene.colors;
+      const shift = variant === 1 ? 18 : 0;
+      return `<svg viewBox="0 0 200 260" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <rect width="200" height="260" fill="${a}"/>
+        <circle cx="${150 + shift}" cy="46" r="28" fill="${c}" opacity="0.7"/>
+        <rect x="${20 + shift / 2}" y="150" width="160" height="90" rx="18" fill="${b}"/>
+        <rect x="${48 + shift / 3}" y="88" width="70" height="78" rx="35" fill="${c}"/>
+      </svg>`;
+    }
+
+    function sceneById(id) {
+      return SCENES.find((s) => s.id === id);
+    }
+
+    function statusBar() {
+      return `<div class="status"><span>9:41</span><span>LTE  ●●●</span></div>`;
+    }
+
+    function tabs(active) {
+      return `<nav class="tabs" aria-label="주요">
+        <button type="button" data-act="tab-today" aria-current="${active === "today" ? "page" : "false"}">오늘</button>
+        <button type="button" data-act="tab-album" aria-current="${active === "album" ? "page" : "false"}">앨범</button>
+      </nav>`;
+    }
+
+    function triptych(sealed, pickMode) {
+      return `<div class="triptych" role="list">
+        ${state.picks.map((id) => {
+          const s = sceneById(id);
+          const cls = [
+            "slot",
+            sealed ? "sealed" : "",
+            pickMode ? "pick" : ""
+          ].join(" ");
+          return `<button type="button" class="${cls}" data-act="slot" data-id="${id}" aria-label="${s.name}">
+            ${art(s, 0)}
+            <span class="cap">${s.name}</span>
+          </button>`;
+        }).join("")}
+      </div>`;
+    }
+
+    function sceneList() {
+      return SCENES.map((s) => {
+        const open = state.openScene === s.id;
+        return `<div class="scene ${open ? "open" : ""}">
+          <button type="button" class="scene-h" data-act="toggle-scene" data-id="${s.id}">
+            <div>
+              <strong>${s.name}</strong>
+              <span>${s.time} · 후보 2장</span>
+            </div>
+            <span class="chev">${open ? "▾" : "▸"}</span>
+          </button>
+          <div class="cands">
+            <button type="button" class="cand" data-act="cand" data-id="${s.id}" data-v="0" aria-label="${s.name} 후보 1">${art(s, 0)}</button>
+            <button type="button" class="cand" data-act="cand" data-id="${s.id}" data-v="1" aria-label="${s.name} 후보 2">${art(s, 1)}</button>
+          </div>
+        </div>`;
+      }).join("");
+    }
+
+    function toastHtml() {
+      return state.toast ? `<div class="toast" role="status">${state.toast}</div>` : "";
+    }
+
+    function renderToday(kind) {
+      const sealed = kind === "sealed" || kind === "share";
+      const replacing = kind === "replace";
+      const title = sealed ? "오늘이 닫혔어요" : "오늘의 3장";
+      const lede = sealed
+        ? "이 3장은 오늘 카드와 앨범에 남겨 두었어요. 원본은 그대로입니다."
+        : "이 3장이면 오늘을 닫을 수 있어요.";
+      return `${statusBar()}
+        <div class="app-body">
+          <p class="kicker">9월 4일 금요일</p>
+          <h1 class="display title">${title}</h1>
+          <p class="lede">${lede}</p>
+          ${replacing ? `<p class="pick-hint">어느 자리를 바꿀까요</p>` : ""}
+          ${triptych(sealed, replacing)}
+          ${sealed
+            ? `<div class="cta-wrap"><button class="btn btn-secondary" type="button" data-act="open-share">3장 공유</button></div>`
+            : `<div class="cta-wrap"><button class="btn btn-primary" type="button" data-act="seal">오늘을 닫기</button></div>`}
+          ${sealed ? "" : `<p class="kicker" style="margin-bottom:4px">장면 6</p>${sceneList()}`}
+        </div>
+        ${tabs("today")}
+        ${toastHtml()}
+        ${kind === "share" ? shareSheet() : ""}`;
+    }
+
+    function shareSheet() {
+      return `<div class="sheet-dim" data-act="close-sheet"></div>
+        <div class="sheet" role="dialog" aria-label="공유">
+          <div class="grab"></div>
+          <h2 class="display" style="margin:0 0 8px;font-size:22px">3장 보내기</h2>
+          <p class="lede">오늘이 닫힌 뒤에 내보냅니다.</p>
+          <div class="share-row">
+            <button type="button" data-act="share-dummy">카카오톡</button>
+            <button type="button" data-act="share-dummy">인스타</button>
+            <button type="button" data-act="share-dummy">더보기</button>
+          </div>
+          <button class="btn btn-ghost" type="button" data-act="close-sheet">닫기</button>
+        </div>`;
+    }
+
+    function bookSheet() {
+      return `<div class="sheet-dim" data-act="close-book"></div>
+        <div class="sheet" role="dialog" aria-label="포토북">
+          <div class="grab"></div>
+          <h2 class="display" style="margin:0 0 8px;font-size:22px">이번 달 포토북</h2>
+          <p class="lede">닫아 둔 12장으로 한 권을 만듭니다. 가격은 제휴 후 정해집니다.</p>
+          <button class="btn btn-primary" type="button" data-act="book-dummy" style="margin:8px 0">자세히 알아보기</button>
+          <button class="btn btn-ghost" type="button" data-act="close-book">나중에</button>
+        </div>`;
+    }
+
+    function renderAlbum(withBook) {
+      const days = [
+        { d: "9.1", ids: ["walk", "lunch", "nap"] },
+        { d: "9.2", ids: ["bath", "play", "window"] },
+        { d: "9.3", ids: ["lunch", "walk", "play"] },
+        { d: "오늘", ids: state.picks, today: true }
+      ];
+      const cards = days.map((day) => `<button class="day-card" type="button" data-act="${day.today ? "tab-today" : "noop"}">
+        <div class="mini">${day.ids.map((id) => `<div>${art(sceneById(id), 0)}</div>`).join("")}</div>
+        <figcaption><strong>${day.d}</strong>3장</figcaption>
+      </button>`).join("");
+      return `${statusBar()}
+        <div class="app-body">
+          <p class="kicker">2026년 9월</p>
+          <h1 class="display title">닫아 둔 날 12</h1>
+          <p class="lede">하루가 카드로 쌓입니다.</p>
+          <div class="month-grid">${cards}</div>
+          <div class="album-cta">
+            <p>이번 달 12장으로 포토북을 만들 수 있어요.</p>
+            <button class="btn btn-secondary" type="button" data-act="open-book">포토북 만들기</button>
+          </div>
+        </div>
+        ${tabs("album")}
+        ${withBook ? bookSheet() : ""}`;
+    }
+
+    function renderOnb(step) {
+      if (step === 1) {
+        return `${statusBar()}<div class="app-body">
+          <p class="kicker">가칭</p>
+          <h1 class="display title">오늘을<br>3장으로 닫아요</h1>
+          <div class="onb-art" aria-hidden="true"><i></i></div>
+          <p class="lede">밤에 쌓인 사진을 다시 훑지 않아도 되게. 오늘의 세트를 고르고 하루를 끝냅니다.</p>
+          <button class="btn btn-primary" type="button" data-act="to-onb2">계속</button>
+        </div>`;
+      }
+      if (step === 2) {
+        return `${statusBar()}<div class="app-body">
+          <p class="kicker">사진 취급</p>
+          <h1 class="display title">원본은<br>기기 밖으로<br>나가지 않아요</h1>
+          <p class="lede">후보 열다섯 장쯤의 작은 미리보기만 잠깐 보냅니다. 서버에 저장하지 않습니다.</p>
+          <p class="lede">나머지 사진은 이 앱이 지우거나 옮기지 않습니다.</p>
+          <button class="btn btn-primary" type="button" data-act="to-onb3">알겠어요</button>
+        </div>`;
+      }
+      return `${statusBar()}<div class="app-body">
+        <p class="kicker">동의</p>
+        <h1 class="display title">아이 사진을<br>다루기 전에</h1>
+        <p class="lede">만 14세 미만 아동의 사진은 법정대리인 동의가 필요합니다. 사용자는 부모입니다.</p>
+        <label class="check">
+          <input type="checkbox" id="guardian" ${state.consented ? "checked" : ""} />
+          <span>나는 이 아이의 법정대리인입니다</span>
+        </label>
+        <button class="btn btn-primary" type="button" data-act="ask-perm" ${state.consented ? "" : "disabled"}>사진 접근 허용</button>
+        <button class="btn btn-ghost" type="button" data-act="deny-perm">지금은 허용하지 않음</button>
+      </div>`;
+    }
+
+    function renderProcess() {
+      const lines = ["오늘 사진을 장면으로 묶는 중", "잘 보이는 컷을 고르는 중", "오늘의 3장을 고르는 중"];
+      const widths = ["28%", "62%", "94%"];
+      return `${statusBar()}<div class="process">
+        <p class="kicker">잠시만요</p>
+        <h1 class="display title">${lines[state.processStep]}</h1>
+        <div class="bar" aria-hidden="true"><i style="width:${widths[state.processStep]}"></i></div>
+      </div>`;
+    }
+
+    function renderEmpty() {
+      return `${statusBar()}<div class="empty">
+        <h1 class="display title">오늘 찍은<br>사진이 없어요</h1>
+        <p class="lede">내일, 사진이 쌓이면 여기로 돌아오면 됩니다.</p>
+      </div>${tabs("today")}`;
+    }
+
+    function renderDenied() {
+      return `${statusBar()}<div class="app-body">
+        <p class="kicker">사진 접근</p>
+        <h1 class="display title">사진을 읽을 수<br>없어요</h1>
+        <p class="lede">오늘의 3장을 고르려면 사진 접근이 필요합니다. 원본은 기기에 남습니다.</p>
+        <button class="btn btn-primary" type="button" data-act="to-onb3">설정에서 허용</button>
+      </div>`;
+    }
+
+    function paint() {
+      const root = document.getElementById("app");
+      const map = {
+        onb1: () => renderOnb(1),
+        onb2: () => renderOnb(2),
+        onb3: () => renderOnb(3),
+        process: renderProcess,
+        today: () => renderToday("today"),
+        replace: () => renderToday("replace"),
+        sealed: () => renderToday("sealed"),
+        share: () => renderToday("share"),
+        album: () => renderAlbum(false),
+        book: () => renderAlbum(true),
+        empty: renderEmpty,
+        denied: renderDenied
+      };
+      root.innerHTML = map[state.screen]();
+      document.querySelectorAll(".nav-btn").forEach((b) => {
+        b.setAttribute("aria-current", b.dataset.jump === state.screen ? "true" : "false");
+      });
+      const n = NOTES[state.screen];
+      document.getElementById("note").innerHTML =
+        `<dt>화면</dt><dd>${n.title}</dd><dt>목적</dt><dd>${n.goal}</dd><dt>위계</dt><dd>${n.hier}</dd>`;
+    }
+
+    function go(screen) {
+      state.screen = screen;
+      if (screen === "today" || screen === "replace" || screen === "sealed" || screen === "share") state.tab = "today";
+      if (screen === "album" || screen === "book") state.tab = "album";
+      if (screen === "sealed" || screen === "share") state.sealed = true;
+      if (screen === "today" || screen === "replace") state.sealed = false;
+      if (screen !== "replace") state.replacingId = null;
+      paint();
+    }
+
+    function runProcess() {
+      state.processStep = 0;
+      go("process");
+      const ticks = [700, 700, 700];
+      let i = 0;
+      const step = () => {
+        if (state.screen !== "process") return;
+        if (i >= 2) {
+          go("today");
+          return;
+        }
+        i += 1;
+        state.processStep = i;
+        paint();
+        window.setTimeout(step, ticks[i]);
+      };
+      window.setTimeout(step, ticks[0]);
+    }
+
+    function flash(text) {
+      state.toast = text;
+      paint();
+      window.setTimeout(() => {
+        state.toast = "";
+        if (state.screen === "today" || state.screen === "sealed") paint();
+      }, 1400);
+    }
+
+    document.addEventListener("click", (e) => {
+      const jump = e.target.closest("[data-jump]");
+      if (jump) {
+        const to = jump.dataset.jump;
+        if (to === "process") runProcess();
+        else if (to === "replace") {
+          state.openScene = "walk";
+          state.replacingId = "walk";
+          go("replace");
+        } else {
+          go(to);
+        }
+        return;
+      }
+
+      const actEl = e.target.closest("[data-act]");
+      if (!actEl) return;
+      const act = actEl.dataset.act;
+
+      switch (act) {
+        case "to-onb2":
+          go("onb2");
+          break;
+        case "to-onb3":
+          go("onb3");
+          break;
+        case "ask-perm":
+          if (!state.consented) return;
+          runProcess();
+          break;
+        case "deny-perm":
+          go("denied");
+          break;
+        case "tab-today":
+          if (state.screen === "empty") {
+            go("empty");
+            break;
+          }
+          go(state.sealed || state.screen === "sealed" || state.screen === "share" ? "sealed" : "today");
+          break;
+        case "tab-album":
+          go("album");
+          break;
+        case "toggle-scene":
+          state.openScene = state.openScene === actEl.dataset.id ? null : actEl.dataset.id;
+          state.replacingId = null;
+          go("today");
+          break;
+        case "cand":
+          state.replacingId = actEl.dataset.id;
+          state.openScene = actEl.dataset.id;
+          go("replace");
+          break;
+        case "slot":
+          if (state.screen !== "replace" || !state.replacingId) return;
+          {
+            const idx = state.picks.indexOf(actEl.dataset.id);
+            if (idx >= 0) state.picks[idx] = state.replacingId;
+            state.replacingId = null;
+            state.openScene = null;
+            go("today");
+            flash("자리를 바꿨어요");
+          }
+          break;
+        case "seal":
+          go("sealed");
+          break;
+        case "open-share":
+          go("share");
+          break;
+        case "close-sheet":
+          go("sealed");
+          break;
+        case "share-dummy":
+          flash("시안 — 실제로 보내지는 않습니다");
+          go("sealed");
+          break;
+        case "open-book":
+          go("book");
+          break;
+        case "close-book":
+          go("album");
+          break;
+        case "book-dummy":
+          flash("시안 — 제휴 전입니다");
+          go("album");
+          break;
+        case "noop":
+          break;
+        default: {
+          const _never = act;
+          void _never;
+        }
+      }
+    });
+
+    document.addEventListener("change", (e) => {
+      if (e.target.id === "guardian") {
+        state.consented = e.target.checked;
+        paint();
+      }
+    });
+
+    paint();
+  </script>
+</body>
+</html>
