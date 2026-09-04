@@ -208,3 +208,15 @@ gh 이슈 생성은 이 환경에서 쓰기 금지라 폴백(본문 출력)으�
 4. 통과 후에야 원가 확인 → 빌드 프롬프트 → 네이티브 구현
 
 시안·스펙 파일은 이 턴에서 변경하지 않음.
+
+## 2026-09-04 14:38 UTC — HTML이 에디터로 열림
+
+사용자: 시안 HTML이 커서 에디터로만 열린다. 내장 브라우저로 바로 보게 해 달라.
+
+조치:
+- `.vscode/settings.json` — `**/todays-three/prototype/*.html` → `workbench.editor.browser`
+- localhost 링크는 내장 브라우저 (`workbench.browser.openLocalhostLinks`)
+- `.vscode/launch.json` — F5로 `http://127.0.0.1:8765/` 를 editor-browser에 연다
+- `.vscode/tasks.json` — 시안 정적 서버
+
+폴백: 우클릭 Open in Integrated Browser / Show Preview. Agents(Glass) 파일 트리는 association을 무시할 수 있음.

@@ -1,0 +1,12 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "type": "editor-browser",
+      "request": "launch",
+      "name": "시안을 Cursor 브라우저에서 열기",
+      "url": "http://127.0.0.1:8765/",
+      "preLaunchTask": "시안 서버"
+    }
+  ]
+}

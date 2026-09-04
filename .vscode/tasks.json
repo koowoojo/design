@@ -1,0 +1,23 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "시안 서버",
+      "type": "shell",
+      "command": "python3 -m http.server 8765 --directory \"${workspaceFolder}/todays-three/prototype\" --bind 127.0.0.1",
+      "isBackground": true,
+      "problemMatcher": {
+        "pattern": [{ "regexp": ".", "file": 1, "location": 1, "message": 1 }],
+        "background": {
+          "activeOnStart": true,
+          "beginsPattern": ".",
+          "endsPattern": "."
+        }
+      },
+      "presentation": {
+        "reveal": "silent",
+        "panel": "dedicated"
+      }
+    }
+  ]
+}

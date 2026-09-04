@@ -1,5 +1,10 @@
 # CHANGELOG
 
+## [0.1.2] 2026-09-04
+
+### 추가
+- 워크스페이스에서 `prototype/*.html` 을 Cursor 내장 브라우저로 연다 (`workbench.editor.browser`)
+
 ## [0.1.1] 2026-09-04
 
 ### 수정

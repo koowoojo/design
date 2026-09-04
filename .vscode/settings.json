@@ -1,0 +1,8 @@
+{
+  "workbench.editorAssociations": {
+    "**/todays-three/prototype/*.html": "workbench.editor.browser"
+  },
+  "workbench.browser.openLocalhostLinks": true,
+  "workbench.browser.autoReloadOnFileChange": true,
+  "simpleBrowser.useIntegratedBrowser": true
+}

@@ -2,7 +2,7 @@
 
 영유아 부모의 하루 마감용 사진 앱 시안. 요구사항 정의서(인터뷰 39턴, 2026-08-26)를 입력으로 했다.
 
-**시안을 보려면** [`prototype/index.html`](./prototype/index.html) 을 브라우저에서 연다.
+**시안을 보려면** `prototype/index.html` 을 연다. 이 워크스페이스는 해당 HTML을 Cursor 내장 브라우저(`workbench.editor.browser`)로 연다. 소스 편집기가 뜨면 창을 한 번 다시 연 뒤 파일을 다시 클릭하거나, 파일에서 우클릭 → **Open in Integrated Browser** / **Show Preview** 를 쓴다.
 
 ---
 
