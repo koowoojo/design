@@ -105,3 +105,10 @@ PR: https://github.com/koowoojo/design/pull/1 (ready for review)
 - PR #1 상태: `MERGED` (https://github.com/koowoojo/design/pull/1)
 - 병합 후 `build.sh` BUILD_EXIT:0, ENTRY_OK
 - 로컬 브랜치 `cursor/apply-ux-kit-5756` 삭제
+
+## 2026-09-04 14:04 UTC — 다른 프로젝트 재사용 방법 질문
+
+사용자: "앞으로 다른 프로젝트에 매번 쓰고 싶으면 어떻게 하면돼?"
+
+답변 근거: `ux-kit/README.md` 빠른 시작, 루트 README, `dist/SETUP-UX-KIT.md` 사용법.
+코드 변경 없음. 설치 파일을 새 프로젝트 채팅에 첨부하고 "적용시켜줘"가 정식 경로.
